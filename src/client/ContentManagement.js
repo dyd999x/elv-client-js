@@ -202,10 +202,7 @@ exports.CreateContentLibrary = async function({
 
   const editResponse = await this.EditContentObject({
     libraryId,
-    objectId,
-    options: {
-      type: "library"
-    }
+    objectId
   });
 
   await this.ReplaceMetadata({

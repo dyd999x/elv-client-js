@@ -29,7 +29,7 @@ exports.Visibility = async function({id}) {
       });
 
       if(!hasVisibility) {
-        return 10;
+        return 0;
       }
 
       this.visibilityInfo[address] = await this.CallContractMethod({
@@ -172,6 +172,7 @@ exports.ContentType = async function({name, typeId, versionHash, publicOnly=fals
   } catch(error) {
     this.Log("Error looking up content type:");
     this.Log(error);
+    console.log(error);
     throw new Error(`Content Type ${name || typeId} is invalid`);
   }
 };
@@ -664,7 +665,9 @@ exports.ContentObjectMetadata = async function({
     const visibility = await this.Visibility({id: objectId});
     let noAuth = visibility >= 10 ||
       ((metadataSubtree || "").replace(/^\/+/, "").startsWith("public") && visibility >= 1);
-    noAuth = true;
+
+    console.log("ACCESSING META:", objectId, metadataSubtree, visibility, noAuth);
+
 
     metadata = await this.utils.ResponseToJson(
       this.HttpClient.Request({
