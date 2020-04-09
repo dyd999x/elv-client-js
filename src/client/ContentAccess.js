@@ -663,10 +663,13 @@ exports.ContentObjectMetadata = async function({
   let metadata;
   try {
     const visibility = await this.Visibility({id: objectId});
+    /* TODO: When public meta is fixed, uncomment
     let noAuth = visibility >= 10 ||
       ((metadataSubtree || "").replace(/^\/+/, "").startsWith("public") && visibility >= 1);
 
-    console.log("ACCESSING META:", objectId, metadataSubtree, visibility, noAuth);
+     */
+
+    let noAuth = ((metadataSubtree || "").replace(/^\/+/, "").startsWith("public") && visibility >= 1);
 
 
     metadata = await this.utils.ResponseToJson(

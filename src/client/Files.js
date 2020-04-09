@@ -387,7 +387,7 @@ exports.CreateFileUploadJob = async function({libraryId, objectId, writeToken, o
   this.Log(`Creating file upload job: ${libraryId} ${objectId} ${writeToken}`);
   this.Log(ops);
 
-  let path = UrlJoin("q", writeToken, "file_jobs");
+  let path = UrlJoin("q", writeToken, "files", "jobs");
 
   if(encryption === "cgck") {
     defaults.encryption = { scheme: "cgck" };
@@ -415,7 +415,7 @@ exports.UploadStatus = async function({libraryId, objectId, writeToken, uploadId
   ValidateParameters({libraryId, objectId});
   ValidateWriteToken(writeToken);
 
-  let path = UrlJoin("q", writeToken, "file_jobs", uploadId);
+  let path = UrlJoin("q", writeToken, "files", "jobs", uploadId);
 
   return this.utils.ResponseToJson(
     this.HttpClient.Request({
@@ -431,7 +431,7 @@ exports.UploadJobStatus = async function({libraryId, objectId, writeToken, uploa
   ValidateParameters({libraryId, objectId});
   ValidateWriteToken(writeToken);
 
-  let path = UrlJoin("q", writeToken, "file_jobs", uploadId, "uploads", jobId);
+  let path = UrlJoin("q", writeToken, "files", "jobs", uploadId, "uploads", jobId);
 
   return this.utils.ResponseToJson(
     this.HttpClient.Request({
@@ -447,7 +447,7 @@ exports.UploadFileData = async function({libraryId, objectId, writeToken, upload
   ValidateParameters({libraryId, objectId});
   ValidateWriteToken(writeToken);
 
-  const path = UrlJoin("q", writeToken, "file_jobs", uploadId, jobId);
+  const path = UrlJoin("q", writeToken, "files", "jobs", uploadId, jobId);
 
   await this.utils.ResponseToJson(
     this.HttpClient.Request({
