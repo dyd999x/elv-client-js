@@ -1,3 +1,4 @@
+require("colors");
 const Lodash = require("lodash");
 const { performance } = require("perf_hooks");
 
@@ -11,7 +12,8 @@ class Id {
   }
 }
 
-const Log = (message, rewrite=false) => {
+const Log = (message, rewrite=false, color) => {
+  if(color) { message = message[color]; }
   if(rewrite) {
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
@@ -144,13 +146,13 @@ class TestSuite {
           // Finish timing on old block
           if(currentDescribeBlocks[index]) {
             const time = (performance.now() - this.describeBlockTiming[currentDescribeBlocks[index]]) / 1000;
-            console.log("\t".repeat(index), this.describeBlocks[currentDescribeBlocks[index]].name, `(${time.toFixed(1)})s\n`);
+            Log(`\n${"\t".repeat(index)}${this.describeBlocks[currentDescribeBlocks[index]].name} (${time.toFixed(1)})s\n`);
           }
 
           // Start timing on new block
           this.describeBlockTiming[describeBlocks[index]] = performance.now();
 
-          console.log("\t".repeat(index), this.describeBlocks[id].name);
+          Log(`\n${"\t".repeat(index)}${this.describeBlocks[id].name}\n\n`);
         });
       }
 
@@ -161,14 +163,14 @@ class TestSuite {
       const outputDescribeBlocks = currentDescribeBlocks.map(id => this.describeBlocks[id]);
 
       if(skip) {
-        console.log(tabs, "<SKIP>", name);
+        Log(`${tabs}<SKIP> ${name}\n`, false, "yellow");
         stats.skipped.push({
           name,
           describeBlocks: outputDescribeBlocks,
           time: 0
         });
       } else {
-        Log(`${tabs}${name}`);
+        Log(`${tabs}${name}`, false, "cyan");
 
         const startTime = performance.now();
 
@@ -197,7 +199,7 @@ class TestSuite {
             time
           });
 
-          Log(`${tabs}${name} ✓   (${(time / 1000).toFixed(1)}s)\n`, true);
+          Log(`${tabs}${name} ✓   (${(time / 1000).toFixed(1)}s)\n`, true, "green");
         } catch(error) {
           let message;
           message = error.stack || error.message || error;
@@ -210,10 +212,11 @@ class TestSuite {
             time
           });
 
-          Log(`${tabs}<ERROR> ${name} ✗   (${(time / 1000).toFixed(1)}s)\n`, true);
+          Log(`${tabs}<ERROR> ${name} ✗   (${(time / 1000).toFixed(1)}s)\n`, true, "red");
 
-          console.log("\n", message, "\n");
           console.log();
+          console.log(message);
+          console.log("\n");
         }
       }
     }
@@ -221,7 +224,7 @@ class TestSuite {
     for(let i = currentDescribeBlocks.length - 1; i >= 0; i--) {
       const id = currentDescribeBlocks[i];
       const time = (performance.now() - this.describeBlockTiming[id]) / 1000;
-      console.log("\t".repeat(i), this.describeBlocks[id].name, `(${time.toFixed(1)})s`);
+      Log(`\n${"\t".repeat(i)}${this.describeBlocks[id].name} (${time.toFixed(1)})s\n`);
     }
     console.log();
 

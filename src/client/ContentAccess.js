@@ -172,7 +172,6 @@ exports.ContentType = async function({name, typeId, versionHash, publicOnly=fals
   } catch(error) {
     this.Log("Error looking up content type:");
     this.Log(error);
-    console.log(error);
     throw new Error(`Content Type ${name || typeId} is invalid`);
   }
 };
@@ -663,14 +662,8 @@ exports.ContentObjectMetadata = async function({
   let metadata;
   try {
     const visibility = await this.Visibility({id: objectId});
-    /* TODO: When public meta is fixed, uncomment
     let noAuth = visibility >= 10 ||
       ((metadataSubtree || "").replace(/^\/+/, "").startsWith("public") && visibility >= 1);
-
-     */
-
-    let noAuth = ((metadataSubtree || "").replace(/^\/+/, "").startsWith("public") && visibility >= 1);
-
 
     metadata = await this.utils.ResponseToJson(
       this.HttpClient.Request({

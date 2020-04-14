@@ -567,10 +567,10 @@ exports.AddContentObjectGroupPermission = async function({objectId, groupAddress
   this.Log(`Adding ${permission} permission to group ${groupAddress} for ${objectId}`);
 
   const event = await this.CallContractMethodAndWait({
-    contractAddress: groupAddress,
+    contractAddress: this.utils.HashToAddress(objectId),
     methodName: "setGroupRights",
     methodArgs: [
-      this.utils.HashToAddress(objectId),
+      groupAddress,
       permission === "manage" ? 2 : (permission === "access" ? 1 : 0),
       permission === "none" ? 0 : 2
     ]
@@ -608,14 +608,11 @@ exports.RemoveContentObjectGroupPermission = async function({objectId, groupAddr
 
   this.Log(`Removing ${permission} permission from group ${groupAddress} for ${objectId}`);
 
-  const isType = (await this.AccessType({id: objectId})) === this.authClient.ACCESS_TYPES.TYPE;
-  const methodName = isType ? "setContentTypeRights" : "setContentObjectRights";
-
   const event = await this.CallContractMethodAndWait({
-    contractAddress: groupAddress,
-    methodName,
+    contractAddress: this.utils.HashToAddress(objectId),
+    methodName: "setRights",
     methodArgs: [
-      this.utils.HashToAddress(objectId),
+      groupAddress,
       permission === "manage" ? 2 : (permission === "access" ? 1 : 0),
       0
     ]

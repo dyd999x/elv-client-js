@@ -575,7 +575,7 @@ exports.DownloadFile = async function({
 
   const encrypted = fileInfo && fileInfo["."].encryption && fileInfo["."].encryption.scheme === "cgck";
   const encryption = encrypted ? "cgck" : undefined;
-  const path = UrlJoin("q", writeToken || versionHash || objectId, "files", filePath);
+  const path = UrlJoin("q", writeToken || versionHash || objectId, "files", "download", filePath);
 
   const headers = await this.authClient.AuthorizationHeader({libraryId, objectId, versionHash, encryption});
   headers.Accept = "*/*";

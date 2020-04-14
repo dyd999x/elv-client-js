@@ -959,7 +959,7 @@ describe("Test ElvClient", () => {
       expect(new Uint8Array(chunkedPart).toString()).toEqual(new Uint8Array(testFile3).toString());
     });
 
-    test("Download Part With Proxy Re-encryption", async () => {
+    test.skip("Download Part With Proxy Re-encryption", async () => {
       const encryptedPart = await accessClient.DownloadPart({libraryId, objectId, partHash: partInfo.encrypted, format: "arrayBuffer"});
       expect(new Uint8Array(encryptedPart).toString()).toEqual(new Uint8Array(encryptedPart).toString());
     });
@@ -1677,20 +1677,25 @@ describe("Test ElvClient", () => {
           writeToken: write_token,
           links: [{
             type: "rep",
-            path: "videoLink/default",
+            path: "public/videoLink/default",
             target: "playout/default/options.json"
           }]
         });
-        const {hash} = await client.FinalizeContentObject({
+        const {id, hash} = await client.FinalizeContentObject({
           libraryId: mediaLibraryId,
           objectId: mezzanineId,
           writeToken: write_token
         });
 
+        await client.SetVisibility({
+          id,
+          visibility: 10
+        });
+
         // Produce playout options from link
         const playoutOptions = await accessClient.PlayoutOptions({
           versionHash: hash,
-          linkPath: "videoLink/default",
+          linkPath: "public/videoLink/default",
           protocols: ["hls", "dash"],
           drms: []
         });
@@ -1705,7 +1710,7 @@ describe("Test ElvClient", () => {
 
         const bitmovinPlayoutOptions = await accessClient.BitmovinPlayoutOptions({
           versionHash: hash,
-          linkPath: "videoLink/default",
+          linkPath: "public/videoLink/default",
           protocols: ["hls", "dash"],
           drms: []
         });
@@ -1907,7 +1912,13 @@ describe("Test ElvClient", () => {
         visibility: 10
       });
 
-      await client.SetAccessCharge({objectId, accessCharge: "0.5"});
+      await client.SetAccessCharge({objectId, accessCharge: "0.25"});
+
+      // Object must be published for access request with access charge to work
+      await client.CallContractMethodAndWait({
+        contractAddress: client.utils.HashToAddress(objectId),
+        methodName: "publish"
+      });
 
       const {accessible, accessCode, accessCharge} = await accessClient.AccessInfo({
         objectId,
