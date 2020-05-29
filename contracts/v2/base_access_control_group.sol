@@ -24,7 +24,7 @@ BsAccessCtrlGrp20200529110800ML: Overloads checkRights to reflect difference bet
 
 contract BaseAccessControlGroup is AccessIndexor, Editable {
 
-    bytes32 public version ="BsAccessCtrlGrp20190723165900ML"; //class name (max 16), date YYYYMMDD, time HHMMSS and Developer initials XX
+    bytes32 public version ="BsAccessCtrlGrp20200529110800ML"; //class name (max 16), date YYYYMMDD, time HHMMSS and Developer initials XX
 
     //mapping (address => bool) public members;
     //mapping (address => bool) public managers;
