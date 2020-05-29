@@ -18,6 +18,7 @@ BsAccessCtrlGrp20190722161600ML: Made editable
 BsAccessCtrlGrp20190722214400ML: Provides the list of members and managers
 BsAccessCtrlGrp20190723130500ML: Fixes typo in managersNum
 BsAccessCtrlGrp20190723165900ML: Fixes deletion/adding to groups
+BsAccessCtrlGrp20200529110800ML: Overloads checkRights to reflect difference between groups and wallets
 */
 
 
@@ -153,6 +154,11 @@ contract BaseAccessControlGroup is AccessIndexor, Editable {
     function canConfirm() public view returns (bool) {
         NodeSpace ns = NodeSpace(contentSpace);
         return ns.canNodePublish(msg.sender);
+    }
+
+
+    function checkRights(uint8 index_type, address obj, uint8 access_type) public view returns(bool) {
+        return checkDirectRights(index_type, obj, access_type);
     }
 
 }
